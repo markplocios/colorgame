@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd23f, #06ffa5, #1cb5e0, #833ab4);
+            background-size: 400% 400%;
+            animation: rainbowBg 8s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        @keyframes rainbowBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border: 8px solid #fff;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 
+                3px 3px 0px #000,
+                6px 6px 10px rgba(0, 0, 0, 0.5);
+            color: #ffff00;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .die {
+            width: 120px;
+            height: 120px;
+            border: 6px solid #fff;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .die::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+        }
+
+        .die.rolling {
+            animation: peryaRoll 0.8s ease-in-out;
+        }
+
+
+
+        @keyframes peryaRoll {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(180deg) scale(0.8) rotateY(180deg); }
+            50% { transform: rotate(360deg) scale(1.2) rotateX(180deg); }
+            75% { transform: rotate(540deg) scale(0.9) rotateY(360deg); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+
+        .controls {
+            margin: 40px 0;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            border: 4px solid #fff;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button.hidden {
+            display: none;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #f7931e, #ff6b35);
+        }
+
+        button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .result-display {
+            font-size: 2em;
+            font-weight: 900;
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            border: 4px solid #fff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .result-display.hidden {
+            display: none;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+                margin: 10px;
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin-bottom: 20px;
+                letter-spacing: 2px;
+            }
+
+            .dice-container {
+                gap: 15px;
+                margin: 30px 0;
+            }
+
+            .die {
+                width: 80px;
+                height: 80px;
+                border: 4px solid #fff;
+                border-radius: 15px;
+            }
+
+            button {
+                padding: 15px 40px;
+                font-size: 1.2em;
+                letter-spacing: 1px;
+            }
+
+            .result-display {
+                font-size: 1.4em;
+                margin: 20px 0;
+                min-height: 50px;
+                border: 3px solid #fff;
+                border-radius: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 15px;
+                letter-spacing: 1px;
+            }
+
+            .dice-container {
+                gap: 10px;
+                margin: 20px 0;
+            }
+
+            .die {
+                width: 65px;
+                height: 65px;
+                border: 3px solid #fff;
+                border-radius: 12px;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1em;
+                letter-spacing: 1px;
+            }
+
+            .result-display {
+                font-size: 1.1em;
+                margin: 15px 0;
+                min-height: 40px;
+                padding: 10px;
+            }
+        }
+
+        .winner {
+            color: #00ff00;
+            animation: celebrate 1s ease-in-out infinite;
+        }
+
+        .same-color {
+            color: #ffff00;
+        }
+
+        .different {
+            color: #ff69b4;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-2deg); }
+            50% { transform: scale(1.2) rotate(0deg); }
+            75% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b35;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>COLOR GAME</h1>
+        
+        <div class="dice-container">
+            <div class="die" id="die1"></div>
+            <div class="die" id="die2"></div>
+            <div class="die" id="die3"></div>
+        </div>
+
+        <div class="controls">
+            <button id="playButton" onclick="playGame()">PLAY</button>
+        </div>
+
+        <div class="result-display hidden" id="resultDisplay"></div>
+    </div>
+
+    <script>
+        let gameState = {
+            diceColors: ['#ffff00', '#ffffff', '#ff69b4'],
+            excludedColors: [],
+            forcedColor: null,
+            forcedPosition: null
+        };
+
+        const peryaColors = [
+            { color: '#ffff00', name: 'Yellow' },
+            { color: '#ffffff', name: 'White' },
+            { color: '#ff69b4', name: 'Pink' },
+            { color: '#0000ff', name: 'Blue' },
+            { color: '#ff0000', name: 'Red' },
+            { color: '#00ff00', name: 'Green' }
+        ];
+
+        function getRandomColor() {
+            const availableColors = peryaColors.filter(colorObj => 
+                !gameState.excludedColors.includes(colorObj.color)
+            );
+            
+            if (availableColors.length === 0) {
+                // If all colors are excluded, return any color
+                return peryaColors[Math.floor(Math.random() * peryaColors.length)].color;
+            }
+            
+            return availableColors[Math.floor(Math.random() * availableColors.length)].color;
+        }
+
+        function updateDiceDisplay() {
+            gameState.diceColors.forEach((color, index) => {
+                const die = document.getElementById(`die${index + 1}`);
+                die.style.backgroundColor = color;
+            });
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = peryaColors[Math.floor(Math.random() * peryaColors.length)].color;
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        function checkResult() {
+            const colors = gameState.diceColors;
+            const resultDiv = document.getElementById('resultDisplay');
+            
+            // Check for all same colors
+            if (colors[0] === colors[1] && colors[1] === colors[2]) {
+                resultDiv.textContent = '🎉 WINNER! All Same! 🎉';
+                resultDiv.className = 'result-display winner';
+                createConfetti();
+            }
+            // Check for two same colors
+            else if (colors[0] === colors[1] || colors[1] === colors[2] || colors[0] === colors[2]) {
+                resultDiv.textContent = '🎯 Nice! Two Same! 🎯';
+                resultDiv.className = 'result-display same-color';
+            }
+            // All different colors
+            else {
+                resultDiv.textContent = '😅 Try Again! All Different! 😅';
+                resultDiv.className = 'result-display different';
+            }
+        }
+
+        function hidePlayButton() {
+            const playButton = document.getElementById('playButton');
+            playButton.classList.add('hidden');
+        }
+
+        function showPlayButton() {
+            const playButton = document.getElementById('playButton');
+            playButton.classList.remove('hidden');
+        }
+
+        function playGame() {
+            // Hide the play button immediately
+            hidePlayButton();
+            
+            // Hide the result display during rolling
+            const resultDiv = document.getElementById('resultDisplay');
+            resultDiv.classList.add('hidden');
+            
+            const dice = [
+                document.getElementById('die1'),
+                document.getElementById('die2'),
+                document.getElementById('die3')
+            ];
+            
+            dice.forEach(die => die.classList.add('rolling'));
+            
+            setTimeout(() => {
+                // Generate new colors
+                if (gameState.forcedColor && gameState.forcedPosition !== null) {
+                    // Force specific color on random position
+                    gameState.diceColors = [
+                        getRandomColor(),
+                        getRandomColor(),
+                        getRandomColor()
+                    ];
+                    // Override the forced position with the forced color
+                    gameState.diceColors[gameState.forcedPosition] = gameState.forcedColor;
+                } else {
+                    // Normal generation based on current exclusions
+                    gameState.diceColors = [
+                        getRandomColor(),
+                        getRandomColor(),
+                        getRandomColor()
+                    ];
+                    gameState.forcedPosition = null;
+                }
+
+                updateDiceDisplay();
+                checkResult();
+                dice.forEach(die => die.classList.remove('rolling'));
+                
+                // Show the result display
+                resultDiv.classList.remove('hidden');
+                
+                // Reset forced color settings after use
+                gameState.forcedColor = null;
+                gameState.forcedPosition = null;
+                
+                // Show the play button again after 1 second
+                setTimeout(() => {
+                    showPlayButton();
+                }, 1000);
+            }, 800);
+        }
+
+        // Initialize game
+        function initGame() {
+            updateDiceDisplay();
+            
+            // Add keyboard event listener
+            document.addEventListener('keydown', function(event) {
+                const key = event.key;
+                const playButton = document.getElementById('playButton');
+                
+                // Only allow keyboard controls if the play button is visible
+                if (!playButton.classList.contains('hidden')) {
+                    if (key === ' ') {
+                        // Spacebar - play normally (reset all special settings)
+                        gameState.excludedColors = [];
+                        gameState.forcedColor = null;
+                        gameState.forcedPosition = null;
+                        playGame();
+                        event.preventDefault();
+                    } else if (key >= '1' && key <= '6') {
+                        // Number keys 1-6 to exclude colors
+                        const colorIndex = parseInt(key) - 1;
+                        const colorToExclude = peryaColors[colorIndex].color;
+                        
+                        // Reset special settings and add the exclusion
+                        gameState.excludedColors = [colorToExclude];
+                        gameState.forcedColor = null;
+                        gameState.forcedPosition = null;
+                        
+                        playGame();
+                        event.preventDefault();
+                    } else if (event.shiftKey && key >= '1' && key <= '6') {
+                        // Shift + Number keys 1-6 to force colors on random position
+                        const colorIndex = parseInt(key) - 1;
+                        const colorToForce = peryaColors[colorIndex].color;
+                        
+                        // Reset other settings and set forced color
+                        gameState.excludedColors = [];
+                        gameState.forcedColor = colorToForce;
+                        gameState.forcedPosition = Math.floor(Math.random() * 3); // Random position 0, 1, or 2
+                        
+                        playGame();
+                        event.preventDefault();
+                    } else if (['!', '@', '#', '$', '%', '^'].includes(key)) {
+                        // Symbol keys to force colors on random position
+                        const symbolMap = {
+                            '!': 0, // Yellow
+                            '@': 1, // White
+                            '#': 2, // Pink
+                            '$': 3, // Blue
+                            '%': 4, // Red
+                            '^': 5  // Green
+                        };
+                        
+                        const colorIndex = symbolMap[key];
+                        const colorToForce = peryaColors[colorIndex].color;
+                        
+                        // Reset other settings and set forced color
+                        gameState.excludedColors = [];
+                        gameState.forcedColor = colorToForce;
+                        gameState.forcedPosition = Math.floor(Math.random() * 3); // Random position 0, 1, or 2
+                        
+                        playGame();
+                        event.preventDefault();
+                    }
+                }
+            });
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
